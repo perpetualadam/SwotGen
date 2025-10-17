@@ -189,9 +189,16 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
-                <p className="text-sm text-gray-600">
-                  Free tier available. Premium features coming soon.
-                </p>
+                <div className="text-sm text-gray-600 space-y-2">
+                  <div>
+                    <p className="font-medium text-gray-900">Free Tier</p>
+                    <p className="text-xs text-gray-500">Basic SWOT analysis</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">Premium - £9.99</p>
+                    <p className="text-xs text-gray-500">Unlimited analyses + PDF export</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
