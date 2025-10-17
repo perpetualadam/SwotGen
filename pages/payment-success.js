@@ -1,31 +1,49 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 
 /**
  * Payment Success Page
- * 
+ *
  * This page is shown after successful Stripe payment.
  * It posts a message to the parent window (the payment modal)
  * to notify that payment was successful.
- * 
+ *
  * The parent window will then:
  * 1. Receive the message
  * 2. Call onSuccess() callback
  * 3. Grant premium access
  * 4. Close the payment window
+ *
+ * Scenarios:
+ * 1. Opened as popup from payment flow: window.close() will work
+ * 2. Accessed directly in browser: window.close() will be blocked, show manual close button
  */
 export default function PaymentSuccess() {
+  const [isPopup, setIsPopup] = useState(false);
+  const [showCloseButton, setShowCloseButton] = useState(false);
+
   useEffect(() => {
+    // Check if this window was opened by JavaScript (popup)
+    // window.opener is only set when opened via window.open()
+    const isOpenedAsPopup = window.opener !== null;
+    setIsPopup(isOpenedAsPopup);
+
     // Post message to parent window (the payment modal)
     // This tells the parent that payment was successful
     if (window.opener) {
       window.opener.postMessage('payment_success', window.location.origin);
     }
 
-    // Close this window after a short delay
+    // Try to close this window after a short delay
     // This gives the parent time to process the message
     const timer = setTimeout(() => {
       window.close();
+
+      // If window.close() didn't work (e.g., direct navigation),
+      // show the manual close button after 2 seconds
+      setTimeout(() => {
+        setShowCloseButton(true);
+      }, 2000);
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -84,21 +102,40 @@ export default function PaymentSuccess() {
             </div>
           </div>
 
-          {/* Loading Message */}
-          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-700 flex items-center justify-center gap-2">
-              <span className="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
-              Redirecting you back...
-            </p>
-          </div>
+          {/* Status Message */}
+          {!showCloseButton ? (
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-sm text-blue-700 flex items-center justify-center gap-2">
+                <span className="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
+                {isPopup ? 'Redirecting you back...' : 'Processing...'}
+              </p>
+            </div>
+          ) : (
+            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+              <p className="text-sm text-amber-700">
+                {isPopup
+                  ? 'Window should close automatically. If not, click the button below.'
+                  : 'You can now close this window or return to the app.'}
+              </p>
+            </div>
+          )}
 
-          {/* Manual Close Button */}
-          <button
-            onClick={() => window.close()}
-            className="mt-6 w-full py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition"
-          >
-            Close Window
-          </button>
+          {/* Manual Close Button - Show when auto-close fails or on direct access */}
+          {showCloseButton && (
+            <button
+              onClick={() => {
+                // Try to close the window
+                window.close();
+                // If that doesn't work, redirect to home
+                setTimeout(() => {
+                  window.location.href = '/';
+                }, 500);
+              }}
+              className="mt-6 w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+            >
+              Close Window or Return Home
+            </button>
+          )}
 
           {/* Security Info */}
           <div className="mt-6 pt-6 border-t border-gray-200">
