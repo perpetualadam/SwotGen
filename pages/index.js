@@ -23,16 +23,6 @@ export default function Home() {
     if (savedPremium === 'true') {
       setIsPremium(true);
     }
-
-    // Check for premium=true AND payment_success=true in URL (for redirect after payment)
-    // Both parameters must be present to grant premium access
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('premium') === 'true' && params.get('payment_success') === 'true') {
-      setIsPremium(true);
-      localStorage.setItem('isPremium', 'true');
-      // Remove query params from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
   }, []);
 
   // Handle form submission
