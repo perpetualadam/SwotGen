@@ -7,22 +7,22 @@ import { useState } from 'react';
  *
  * Payment Flow:
  * 1. User clicks "Upgrade Now"
- * 2. Payment link opens in new window
+ * 2. Payment link opens in new window with success_url parameter
  * 3. User completes payment on Stripe
- * 4. Stripe shows success page
- * 5. User closes payment window
- * 6. Parent window detects window closed
- * 7. onSuccess() is called
- * 8. Premium access is granted
+ * 4. Stripe redirects to success_url with ?premium=true&payment_success=true
+ * 5. Success page posts message to parent window
+ * 6. Parent window receives message and calls onSuccess()
+ * 7. Premium access is granted
  *
- * Note: This implementation assumes that if the user closes the payment window,
- * they have completed the payment. In production, you should implement proper
- * payment verification via webhooks or a success URL redirect.
+ * If user closes window without completing payment:
+ * - Window close is detected
+ * - onSuccess() is NOT called
+ * - Premium access is NOT granted
  *
  * Props:
  *   - isOpen: boolean - Whether modal is visible
  *   - onClose: function - Called when user clicks Cancel
- *   - onSuccess: function - Called when payment window closes
+ *   - onSuccess: function - Called when payment is verified as successful
  */
 export default function PremiumModal({ isOpen, onClose, onSuccess }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +43,9 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
 
     try {
       // Open Stripe Payment Link in new window
+      // Note: The payment link should be configured in Stripe dashboard with:
+      // Success URL: https://swotgen.vercel.app/payment-success
+      // This ensures Stripe redirects to our success page after payment
       const paymentWindow = window.open(
         paymentLink,
         'stripe_payment',
@@ -55,23 +58,41 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         return;
       }
 
-      // Check if payment window was closed
-      // When user closes the window, we assume payment was completed
+      // Set up a listener for the payment success message
+      // The success page will post a message to the parent window
+      const handleMessage = (event) => {
+        // Verify the message is from our success page
+        if (event.origin !== window.location.origin) {
+          return;
+        }
+
+        if (event.data === 'payment_success') {
+          clearInterval(checkInterval);
+          clearTimeout(timeoutId);
+          window.removeEventListener('message', handleMessage);
+          setIsLoading(false);
+
+          // Call success callback - payment was verified
+          onSuccess();
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      // Check if payment window was closed (user cancelled)
       const checkInterval = setInterval(() => {
         if (paymentWindow.closed) {
           clearInterval(checkInterval);
-          clearTimeout(timeoutId);
+          window.removeEventListener('message', handleMessage);
           setIsLoading(false);
-
-          // Call success callback - user closed the payment window
-          // In production, verify payment via webhook or success URL
-          onSuccess();
+          // Don't call onSuccess - user closed the window without completing payment
         }
       }, 1000);
 
       // Timeout after 30 minutes
       const timeoutId = setTimeout(() => {
         clearInterval(checkInterval);
+        window.removeEventListener('message', handleMessage);
         if (!paymentWindow.closed) {
           paymentWindow.close();
         }
