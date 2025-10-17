@@ -3,6 +3,7 @@ import Head from 'next/head';
 import InputForm from '../components/InputForm';
 import SWOTDisplay from '../components/SWOTDisplay';
 import PremiumModal from '../components/PremiumModal';
+import ExportButton from '../components/ExportButton';
 
 export default function Home() {
   const [swotData, setSWOTData] = useState(null);
@@ -10,6 +11,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [isPremium, setIsPremium] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [formData, setFormData] = useState({ idea: '', focusArea: '' });
 
   // Load premium status from localStorage on mount
   useEffect(() => {
@@ -29,10 +31,11 @@ export default function Home() {
   }, []);
 
   // Handle form submission
-  const handleAnalyze = async (formData) => {
+  const handleAnalyze = async (data) => {
     setIsLoading(true);
     setError('');
     setSWOTData(null);
+    setFormData(data); // Save form data for export
 
     try {
       // Call the API route with the idea and focus area
@@ -41,7 +44,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
@@ -49,8 +52,8 @@ export default function Home() {
         throw new Error(errorData.error || 'Failed to analyze idea');
       }
 
-      const data = await response.json();
-      setSWOTData(data);
+      const analysisData = await response.json();
+      setSWOTData(analysisData);
     } catch (err) {
       setError(err.message || 'An error occurred. Please try again.');
       console.error('Error:', err);
@@ -134,6 +137,18 @@ export default function Home() {
           {swotData && (
             <div className="bg-white rounded-lg shadow-lg p-8">
               <SWOTDisplay data={swotData} />
+
+              {/* Export button - only for premium users */}
+              {isPremium && (
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 mb-4">Premium Feature</p>
+                  <ExportButton
+                    swotData={swotData}
+                    idea={formData.idea}
+                    focusArea={formData.focusArea}
+                  />
+                </div>
+              )}
             </div>
           )}
 
