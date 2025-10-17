@@ -13,6 +13,10 @@ export default function Home() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [formData, setFormData] = useState({ idea: '', focusArea: '' });
 
+  // Development mode: Set to true to test export without premium
+  // IMPORTANT: Set to false before pushing to production!
+  const DEV_MODE_SHOW_EXPORT = process.env.NODE_ENV === 'development' && true;
+
   // Load premium status from localStorage on mount
   useEffect(() => {
     const savedPremium = localStorage.getItem('isPremium');
@@ -20,12 +24,13 @@ export default function Home() {
       setIsPremium(true);
     }
 
-    // Check for premium=true in URL (for redirect after payment)
+    // Check for premium=true AND payment_success=true in URL (for redirect after payment)
+    // Both parameters must be present to grant premium access
     const params = new URLSearchParams(window.location.search);
-    if (params.get('premium') === 'true') {
+    if (params.get('premium') === 'true' && params.get('payment_success') === 'true') {
       setIsPremium(true);
       localStorage.setItem('isPremium', 'true');
-      // Remove query param from URL
+      // Remove query params from URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
@@ -138,10 +143,12 @@ export default function Home() {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <SWOTDisplay data={swotData} />
 
-              {/* Export button - only for premium users */}
-              {isPremium && (
+              {/* Export button - only for premium users (or dev mode) */}
+              {(isPremium || DEV_MODE_SHOW_EXPORT) && (
                 <div className="mt-8 pt-8 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 mb-4">Premium Feature</p>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {DEV_MODE_SHOW_EXPORT && !isPremium ? '🧪 Dev Mode - Export Test' : 'Premium Feature'}
+                  </p>
                   <ExportButton
                     swotData={swotData}
                     idea={formData.idea}
