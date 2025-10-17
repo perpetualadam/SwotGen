@@ -103,7 +103,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         {/* Price Box */}
         <div className="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
           <p className="text-sm text-gray-600 font-medium">One-time payment</p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">$9.99</p>
+          <p className="text-3xl font-bold text-gray-900 mt-1">£9.99</p>
           <p className="text-xs text-gray-500 mt-2">No recurring charges</p>
         </div>
 
