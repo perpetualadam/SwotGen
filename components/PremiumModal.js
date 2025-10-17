@@ -44,7 +44,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
     try {
       // Open Stripe Payment Link in new window
       // Note: The payment link should be configured in Stripe dashboard with:
-      // Success URL: https://swotgen.vercel.app/payment-success
+      // Success URL: https://swot-gen.vercel.app/payment-success
       // This ensures Stripe redirects to our success page after payment
       const paymentWindow = window.open(
         paymentLink,
