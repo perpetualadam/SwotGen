@@ -132,7 +132,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
           </div>
           <div className="flex items-start gap-3">
             <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">PDF export for all frameworks</span>
+            <span className="text-gray-700">Export in multiple formats: PDF, CSV, JSON</span>
           </div>
         </div>
 

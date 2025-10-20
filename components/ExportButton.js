@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { getFramework, getCategoryLabel } from '../lib/frameworks';
@@ -6,7 +6,8 @@ import { getFramework, getCategoryLabel } from '../lib/frameworks';
 /**
  * ExportButton Component
  *
- * Exports strategic analysis results as a PDF file for any framework
+ * Exports strategic analysis results in multiple formats (PDF, CSV, JSON)
+ * CSV and JSON exports are premium-only features
  *
  * Props:
  *   - analysisData: object - The analysis data to export
@@ -18,6 +19,116 @@ import { getFramework, getCategoryLabel } from '../lib/frameworks';
 export default function ExportButton({ analysisData, framework = 'swot', idea, focusArea, disabled = false }) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState('');
+  const [isPremium, setIsPremium] = useState(false);
+
+  // Load premium status from localStorage on mount
+  useEffect(() => {
+    const savedPremium = localStorage.getItem('isPremium');
+    setIsPremium(savedPremium === 'true');
+  }, []);
+
+  const exportToCSV = () => {
+    if (!analysisData) {
+      setError('No analysis data to export');
+      return;
+    }
+
+    if (!isPremium) {
+      setError('CSV export is a premium feature. Upgrade to unlock it.');
+      return;
+    }
+
+    try {
+      const frameworkConfig = getFramework(framework);
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const frameworkName = framework.replace('-', '_').toUpperCase();
+
+      // Build CSV content
+      let csvContent = 'data:text/csv;charset=utf-8,';
+      csvContent += `Business Idea,${idea}\n`;
+      csvContent += `Focus Area,${focusArea}\n`;
+      csvContent += `Framework,${frameworkConfig.name}\n`;
+      csvContent += `Generated,${new Date().toLocaleString()}\n\n`;
+
+      // Add categories and items
+      frameworkConfig.categories.forEach((category) => {
+        const categoryLabel = getCategoryLabel(frameworkConfig, category);
+        const items = analysisData[category] || [];
+        csvContent += `${categoryLabel}\n`;
+        items.forEach((item) => {
+          csvContent += `,"${item.replace(/"/g, '""')}"\n`;
+        });
+        csvContent += '\n';
+      });
+
+      // Add score
+      const scoreField = frameworkConfig.scoreField;
+      const scoreValue = analysisData[scoreField] || 0;
+      csvContent += `${frameworkConfig.scoreLabel},${scoreValue}/100\n`;
+
+      // Download CSV
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `${frameworkName}-Analysis-${timestamp}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setError('');
+    } catch (err) {
+      console.error('CSV export error:', err);
+      setError('Failed to export CSV. Please try again.');
+    }
+  };
+
+  const exportToJSON = () => {
+    if (!analysisData) {
+      setError('No analysis data to export');
+      return;
+    }
+
+    if (!isPremium) {
+      setError('JSON export is a premium feature. Upgrade to unlock it.');
+      return;
+    }
+
+    try {
+      const frameworkConfig = getFramework(framework);
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const frameworkName = framework.replace('-', '_').toUpperCase();
+
+      // Build JSON content
+      const jsonData = {
+        metadata: {
+          businessIdea: idea,
+          focusArea: focusArea,
+          framework: frameworkConfig.name,
+          frameworkId: framework,
+          generated: new Date().toISOString(),
+          platform: 'SwotGen',
+        },
+        analysis: analysisData,
+      };
+
+      // Download JSON
+      const jsonString = JSON.stringify(jsonData, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${frameworkName}-Analysis-${timestamp}.json`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setError('');
+    } catch (err) {
+      console.error('JSON export error:', err);
+      setError('Failed to export JSON. Please try again.');
+    }
+  };
 
   const exportToPDF = async () => {
     if (!analysisData) {
@@ -136,26 +247,58 @@ export default function ExportButton({ analysisData, framework = 'swot', idea, f
 
   return (
     <div>
-      <button
-        onClick={exportToPDF}
-        disabled={disabled || isExporting || !analysisData}
-        className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
-          disabled || isExporting || !analysisData
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
-        }`}
-      >
-        {isExporting ? (
-          <>
-            <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            Exporting...
-          </>
-        ) : (
-          <>
-            📥 Export as PDF
-          </>
-        )}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        {/* PDF Export - Available to all users */}
+        <button
+          onClick={exportToPDF}
+          disabled={disabled || isExporting || !analysisData}
+          className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+            disabled || isExporting || !analysisData
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
+          }`}
+          title="Export analysis as PDF"
+        >
+          {isExporting ? (
+            <>
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Exporting...
+            </>
+          ) : (
+            <>
+              📥 PDF
+            </>
+          )}
+        </button>
+
+        {/* CSV Export - Premium only */}
+        <button
+          onClick={exportToCSV}
+          disabled={disabled || !analysisData || !isPremium}
+          className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+            disabled || !analysisData || !isPremium
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+          }`}
+          title={isPremium ? 'Export analysis as CSV' : 'Premium feature - Upgrade to unlock'}
+        >
+          📊 CSV {!isPremium && '🔒'}
+        </button>
+
+        {/* JSON Export - Premium only */}
+        <button
+          onClick={exportToJSON}
+          disabled={disabled || !analysisData || !isPremium}
+          className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+            disabled || !analysisData || !isPremium
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-purple-600 hover:bg-purple-700 text-white cursor-pointer'
+          }`}
+          title={isPremium ? 'Export analysis as JSON' : 'Premium feature - Upgrade to unlock'}
+        >
+          {} JSON {!isPremium && '🔒'}
+        </button>
+      </div>
       {error && (
         <p className="text-red-600 text-sm mt-2">{error}</p>
       )}

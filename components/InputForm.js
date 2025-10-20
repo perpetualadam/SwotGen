@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getFrameworkOptions } from '../lib/frameworks';
 
 export default function InputForm({ onSubmit, isLoading }) {
@@ -6,6 +6,14 @@ export default function InputForm({ onSubmit, isLoading }) {
   const [focusArea, setFocusArea] = useState('Market');
   const [framework, setFramework] = useState('swot');
   const [error, setError] = useState('');
+  const [isPremium, setIsPremium] = useState(false);
+  const [showUpgradeHint, setShowUpgradeHint] = useState(false);
+
+  // Load premium status from localStorage on mount
+  useEffect(() => {
+    const savedPremium = localStorage.getItem('isPremium');
+    setIsPremium(savedPremium === 'true');
+  }, []);
 
   // Validate input before submission
   const handleSubmit = (e) => {
@@ -86,16 +94,37 @@ export default function InputForm({ onSubmit, isLoading }) {
           <select
             id="framework"
             value={framework}
-            onChange={(e) => setFramework(e.target.value)}
+            onChange={(e) => {
+              const selectedId = e.target.value;
+              // For non-premium users, only allow SWOT
+              if (!isPremium && selectedId !== 'swot') {
+                setShowUpgradeHint(true);
+                return;
+              }
+              setFramework(selectedId);
+              setShowUpgradeHint(false);
+            }}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
             disabled={isLoading}
           >
-            {getFrameworkOptions().map((fw) => (
-              <option key={fw.id} value={fw.id}>
-                {fw.name} - {fw.description}
-              </option>
-            ))}
+            {getFrameworkOptions().map((fw) => {
+              const isPremiumFramework = fw.id !== 'swot';
+              const isDisabled = !isPremium && isPremiumFramework;
+              return (
+                <option key={fw.id} value={fw.id} disabled={isDisabled}>
+                  {fw.name} {isDisabled ? '🔒 Premium' : ''} - {fw.description}
+                </option>
+              );
+            })}
           </select>
+
+          {/* Upgrade hint for non-premium users */}
+          {showUpgradeHint && !isPremium && (
+            <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+              <span>🔒</span>
+              <span>Upgrade to Premium to unlock all 7 strategic frameworks</span>
+            </p>
+          )}
         </div>
 
         {/* Submit button */}
