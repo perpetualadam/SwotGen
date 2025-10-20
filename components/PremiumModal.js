@@ -113,14 +113,18 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Upgrade to Premium</h2>
-          <p className="text-gray-600 mt-2">Unlock unlimited SWOT analyses</p>
+          <p className="text-gray-600 mt-2">Unlock all 7 strategic frameworks</p>
         </div>
 
         {/* Features List */}
         <div className="mb-6 space-y-3">
           <div className="flex items-start gap-3">
             <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Unlimited SWOT analyses</span>
+            <span className="text-gray-700">Unlimited analyses for all 7 frameworks</span>
+          </div>
+          <div className="flex items-start gap-3">
+            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
+            <span className="text-gray-700">SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S</span>
           </div>
           <div className="flex items-start gap-3">
             <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
@@ -128,11 +132,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
           </div>
           <div className="flex items-start gap-3">
             <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Priority support</span>
-          </div>
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Export results as PDF</span>
+            <span className="text-gray-700">PDF export for all frameworks</span>
           </div>
         </div>
 

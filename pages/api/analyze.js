@@ -1,5 +1,6 @@
 // API Route: /api/analyze
-// Handles POST requests to generate SWOT analysis using Groq, Together.ai, or OpenAI
+// Handles POST requests to generate strategic analysis using Groq, Together.ai, or OpenAI
+// Supports multiple frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S
 
 export default async function handler(req, res) {
   // Only accept POST requests
@@ -7,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { idea, focusArea = 'Market' } = req.body;
+  const { idea, focusArea = 'Market', framework = 'swot' } = req.body;
 
   // Validate input
   if (!idea || typeof idea !== 'string') {
@@ -18,6 +19,10 @@ export default async function handler(req, res) {
   if (trimmedIdea.length < 10 || trimmedIdea.length > 500) {
     return res.status(400).json({ error: 'Idea must be between 10 and 500 characters' });
   }
+
+  // Validate framework
+  const validFrameworks = ['swot', 'pestle', 'porters', 'noise', 'balanced-scorecard', 'vrio', 'mckinsey-7s'];
+  const selectedFramework = validFrameworks.includes(framework) ? framework : 'swot';
 
   // Check for API key (Groq first, then Together.ai, then OpenAI)
   const groqKey = process.env.GROQ_API_KEY;
@@ -31,28 +36,134 @@ export default async function handler(req, res) {
 
   try {
     // Determine which API to use (priority: Groq > Together.ai > OpenAI)
-    let swotData;
+    let analysisData;
     if (groqKey) {
-      swotData = await analyzeWithGroq(trimmedIdea, focusArea, groqKey);
+      analysisData = await analyzeWithGroq(trimmedIdea, focusArea, selectedFramework, groqKey);
     } else if (togetherKey) {
-      swotData = await analyzeWithTogetherAI(trimmedIdea, focusArea, togetherKey);
+      analysisData = await analyzeWithTogetherAI(trimmedIdea, focusArea, selectedFramework, togetherKey);
     } else {
-      swotData = await analyzeWithOpenAI(trimmedIdea, focusArea, openaiKey);
+      analysisData = await analyzeWithOpenAI(trimmedIdea, focusArea, selectedFramework, openaiKey);
     }
 
-    return res.status(200).json(swotData);
+    return res.status(200).json(analysisData);
   } catch (error) {
     console.error('Analysis error:', error);
     return res.status(500).json({ error: 'Failed to analyze idea. Please try again.' });
   }
 }
 
-// Analyze using Groq API (groq.com)
-async function analyzeWithGroq(idea, focusArea, apiKey) {
-  const prompt = `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
+// Generate prompt based on framework
+function generatePrompt(idea, focusArea, framework) {
+  const baseContext = `Business Idea: "${idea}"\nFocus Area: ${focusArea}`;
 
-Business Idea: "${idea}"
-Focus Area: ${focusArea}
+  switch (framework) {
+    case 'pestle':
+      return `You are a business analyst. Analyze the following business idea using PESTLE analysis.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Political": ["factor1", "factor2", "factor3"],
+  "Economic": ["factor1", "factor2", "factor3"],
+  "Social": ["factor1", "factor2", "factor3"],
+  "Technological": ["factor1", "factor2", "factor3"],
+  "Legal": ["factor1", "factor2", "factor3"],
+  "Environmental": ["factor1", "factor2", "factor3"],
+  "ViabilityScore": 75
+}
+
+Ensure ViabilityScore is an integer between 0-100.`;
+
+    case 'porters':
+      return `You are a business analyst. Analyze the following business idea using Porter's Five Forces framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "CompetitiveRivalry": ["factor1", "factor2", "factor3"],
+  "SupplierPower": ["factor1", "factor2", "factor3"],
+  "BuyerPower": ["factor1", "factor2", "factor3"],
+  "ThreatOfSubstitution": ["factor1", "factor2", "factor3"],
+  "ThreatOfNewEntry": ["factor1", "factor2", "factor3"],
+  "CompetitiveIntensity": 75
+}
+
+Ensure CompetitiveIntensity is an integer between 0-100.`;
+
+    case 'noise':
+      return `You are a business analyst. Analyze the following business idea using NOISE analysis.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Needs": ["need1", "need2", "need3"],
+  "Opportunities": ["opp1", "opp2", "opp3"],
+  "Improvements": ["imp1", "imp2", "imp3"],
+  "Strengths": ["str1", "str2", "str3"],
+  "Exceptions": ["exc1", "exc2", "exc3"],
+  "PotentialScore": 75
+}
+
+Ensure PotentialScore is an integer between 0-100.`;
+
+    case 'balanced-scorecard':
+      return `You are a business analyst. Analyze the following business idea using Balanced Scorecard framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Financial": ["metric1", "metric2", "metric3"],
+  "Customer": ["metric1", "metric2", "metric3"],
+  "InternalProcesses": ["metric1", "metric2", "metric3"],
+  "LearningGrowth": ["metric1", "metric2", "metric3"],
+  "StrategicAlignment": 75
+}
+
+Ensure StrategicAlignment is an integer between 0-100.`;
+
+    case 'vrio':
+      return `You are a business analyst. Analyze the following business idea using VRIO framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Value": ["factor1", "factor2", "factor3"],
+  "Rarity": ["factor1", "factor2", "factor3"],
+  "Imitability": ["factor1", "factor2", "factor3"],
+  "Organization": ["factor1", "factor2", "factor3"],
+  "CompetitiveAdvantage": 75
+}
+
+Ensure CompetitiveAdvantage is an integer between 0-100.`;
+
+    case 'mckinsey-7s':
+      return `You are a business analyst. Analyze the following business idea using McKinsey 7S Model.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Strategy": ["element1", "element2", "element3"],
+  "Structure": ["element1", "element2", "element3"],
+  "Systems": ["element1", "element2", "element3"],
+  "SharedValues": ["element1", "element2", "element3"],
+  "Skills": ["element1", "element2", "element3"],
+  "Style": ["element1", "element2", "element3"],
+  "Staff": ["element1", "element2", "element3"],
+  "OrganizationalAlignment": 75
+}
+
+Ensure OrganizationalAlignment is an integer between 0-100.`;
+
+    default: // SWOT
+      return `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
+
+${baseContext}
 
 Provide your response in the following JSON format ONLY (no markdown, no extra text):
 {
@@ -64,6 +175,12 @@ Provide your response in the following JSON format ONLY (no markdown, no extra t
 }
 
 Ensure NicheScore is an integer between 0-100 representing market viability.`;
+  }
+}
+
+// Analyze using Groq API (groq.com)
+async function analyzeWithGroq(idea, focusArea, framework, apiKey) {
+  const prompt = generatePrompt(idea, focusArea, framework);
 
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -96,26 +213,12 @@ Ensure NicheScore is an integer between 0-100 representing market viability.`;
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content || '';
 
-  return parseSwotResponse(content);
+  return parseFrameworkResponse(content, framework);
 }
 
 // Analyze using Together.ai API
-async function analyzeWithTogetherAI(idea, focusArea, apiKey) {
-  const prompt = `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
-
-Business Idea: "${idea}"
-Focus Area: ${focusArea}
-
-Provide your response in the following JSON format ONLY (no markdown, no extra text):
-{
-  "Strengths": ["strength1", "strength2", "strength3"],
-  "Weaknesses": ["weakness1", "weakness2", "weakness3"],
-  "Opportunities": ["opportunity1", "opportunity2", "opportunity3"],
-  "Threats": ["threat1", "threat2", "threat3"],
-  "NicheScore": 75
-}
-
-Ensure NicheScore is an integer between 0-100 representing market viability.`;
+async function analyzeWithTogetherAI(idea, focusArea, framework, apiKey) {
+  const prompt = generatePrompt(idea, focusArea, framework);
 
   const response = await fetch('https://api.together.xyz/inference', {
     method: 'POST',
@@ -139,26 +242,12 @@ Ensure NicheScore is an integer between 0-100 representing market viability.`;
   const data = await response.json();
   const content = data.output?.choices?.[0]?.text || '';
 
-  return parseSwotResponse(content);
+  return parseFrameworkResponse(content, framework);
 }
 
 // Analyze using OpenAI API
-async function analyzeWithOpenAI(idea, focusArea, apiKey) {
-  const prompt = `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
-
-Business Idea: "${idea}"
-Focus Area: ${focusArea}
-
-Provide your response in the following JSON format ONLY (no markdown, no extra text):
-{
-  "Strengths": ["strength1", "strength2", "strength3"],
-  "Weaknesses": ["weakness1", "weakness2", "weakness3"],
-  "Opportunities": ["opportunity1", "opportunity2", "opportunity3"],
-  "Threats": ["threat1", "threat2", "threat3"],
-  "NicheScore": 75
-}
-
-Ensure NicheScore is an integer between 0-100 representing market viability.`;
+async function analyzeWithOpenAI(idea, focusArea, framework, apiKey) {
+  const prompt = generatePrompt(idea, focusArea, framework);
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -190,15 +279,15 @@ Ensure NicheScore is an integer between 0-100 representing market viability.`;
   const data = await response.json();
   const content = data.choices?.[0]?.message?.content || '';
 
-  return parseSwotResponse(content);
+  return parseFrameworkResponse(content, framework);
 }
 
-// Parse and validate the LLM response
-function parseSwotResponse(content) {
+// Parse and validate the LLM response based on framework
+function parseFrameworkResponse(content, framework) {
   try {
     // Extract JSON from the response (handle markdown code blocks)
     let jsonStr = content.trim();
-    
+
     // Remove markdown code blocks if present
     if (jsonStr.includes('```json')) {
       jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();
@@ -208,26 +297,157 @@ function parseSwotResponse(content) {
 
     const parsed = JSON.parse(jsonStr);
 
-    // Validate structure
-    const result = {
-      Strengths: Array.isArray(parsed.Strengths) ? parsed.Strengths.slice(0, 5) : [],
-      Weaknesses: Array.isArray(parsed.Weaknesses) ? parsed.Weaknesses.slice(0, 5) : [],
-      Opportunities: Array.isArray(parsed.Opportunities) ? parsed.Opportunities.slice(0, 5) : [],
-      Threats: Array.isArray(parsed.Threats) ? parsed.Threats.slice(0, 5) : [],
-      NicheScore: Math.min(100, Math.max(0, parseInt(parsed.NicheScore) || 50)),
-    };
+    // Validate and normalize based on framework
+    switch (framework) {
+      case 'pestle':
+        return {
+          Political: Array.isArray(parsed.Political) ? parsed.Political.slice(0, 5) : [],
+          Economic: Array.isArray(parsed.Economic) ? parsed.Economic.slice(0, 5) : [],
+          Social: Array.isArray(parsed.Social) ? parsed.Social.slice(0, 5) : [],
+          Technological: Array.isArray(parsed.Technological) ? parsed.Technological.slice(0, 5) : [],
+          Legal: Array.isArray(parsed.Legal) ? parsed.Legal.slice(0, 5) : [],
+          Environmental: Array.isArray(parsed.Environmental) ? parsed.Environmental.slice(0, 5) : [],
+          ViabilityScore: Math.min(100, Math.max(0, parseInt(parsed.ViabilityScore) || 50)),
+        };
 
-    return result;
+      case 'porters':
+        return {
+          CompetitiveRivalry: Array.isArray(parsed.CompetitiveRivalry) ? parsed.CompetitiveRivalry.slice(0, 5) : [],
+          SupplierPower: Array.isArray(parsed.SupplierPower) ? parsed.SupplierPower.slice(0, 5) : [],
+          BuyerPower: Array.isArray(parsed.BuyerPower) ? parsed.BuyerPower.slice(0, 5) : [],
+          ThreatOfSubstitution: Array.isArray(parsed.ThreatOfSubstitution) ? parsed.ThreatOfSubstitution.slice(0, 5) : [],
+          ThreatOfNewEntry: Array.isArray(parsed.ThreatOfNewEntry) ? parsed.ThreatOfNewEntry.slice(0, 5) : [],
+          CompetitiveIntensity: Math.min(100, Math.max(0, parseInt(parsed.CompetitiveIntensity) || 50)),
+        };
+
+      case 'noise':
+        return {
+          Needs: Array.isArray(parsed.Needs) ? parsed.Needs.slice(0, 5) : [],
+          Opportunities: Array.isArray(parsed.Opportunities) ? parsed.Opportunities.slice(0, 5) : [],
+          Improvements: Array.isArray(parsed.Improvements) ? parsed.Improvements.slice(0, 5) : [],
+          Strengths: Array.isArray(parsed.Strengths) ? parsed.Strengths.slice(0, 5) : [],
+          Exceptions: Array.isArray(parsed.Exceptions) ? parsed.Exceptions.slice(0, 5) : [],
+          PotentialScore: Math.min(100, Math.max(0, parseInt(parsed.PotentialScore) || 50)),
+        };
+
+      case 'balanced-scorecard':
+        return {
+          Financial: Array.isArray(parsed.Financial) ? parsed.Financial.slice(0, 5) : [],
+          Customer: Array.isArray(parsed.Customer) ? parsed.Customer.slice(0, 5) : [],
+          InternalProcesses: Array.isArray(parsed.InternalProcesses) ? parsed.InternalProcesses.slice(0, 5) : [],
+          LearningGrowth: Array.isArray(parsed.LearningGrowth) ? parsed.LearningGrowth.slice(0, 5) : [],
+          StrategicAlignment: Math.min(100, Math.max(0, parseInt(parsed.StrategicAlignment) || 50)),
+        };
+
+      case 'vrio':
+        return {
+          Value: Array.isArray(parsed.Value) ? parsed.Value.slice(0, 5) : [],
+          Rarity: Array.isArray(parsed.Rarity) ? parsed.Rarity.slice(0, 5) : [],
+          Imitability: Array.isArray(parsed.Imitability) ? parsed.Imitability.slice(0, 5) : [],
+          Organization: Array.isArray(parsed.Organization) ? parsed.Organization.slice(0, 5) : [],
+          CompetitiveAdvantage: Math.min(100, Math.max(0, parseInt(parsed.CompetitiveAdvantage) || 50)),
+        };
+
+      case 'mckinsey-7s':
+        return {
+          Strategy: Array.isArray(parsed.Strategy) ? parsed.Strategy.slice(0, 5) : [],
+          Structure: Array.isArray(parsed.Structure) ? parsed.Structure.slice(0, 5) : [],
+          Systems: Array.isArray(parsed.Systems) ? parsed.Systems.slice(0, 5) : [],
+          SharedValues: Array.isArray(parsed.SharedValues) ? parsed.SharedValues.slice(0, 5) : [],
+          Skills: Array.isArray(parsed.Skills) ? parsed.Skills.slice(0, 5) : [],
+          Style: Array.isArray(parsed.Style) ? parsed.Style.slice(0, 5) : [],
+          Staff: Array.isArray(parsed.Staff) ? parsed.Staff.slice(0, 5) : [],
+          OrganizationalAlignment: Math.min(100, Math.max(0, parseInt(parsed.OrganizationalAlignment) || 50)),
+        };
+
+      default: // SWOT
+        return {
+          Strengths: Array.isArray(parsed.Strengths) ? parsed.Strengths.slice(0, 5) : [],
+          Weaknesses: Array.isArray(parsed.Weaknesses) ? parsed.Weaknesses.slice(0, 5) : [],
+          Opportunities: Array.isArray(parsed.Opportunities) ? parsed.Opportunities.slice(0, 5) : [],
+          Threats: Array.isArray(parsed.Threats) ? parsed.Threats.slice(0, 5) : [],
+          NicheScore: Math.min(100, Math.max(0, parseInt(parsed.NicheScore) || 50)),
+        };
+    }
   } catch (error) {
     console.error('Parse error:', error);
-    // Return default response if parsing fails
-    return {
-      Strengths: ['Innovative concept', 'Clear value proposition'],
-      Weaknesses: ['Market validation needed', 'Resource constraints'],
-      Opportunities: ['Growing market demand', 'Strategic partnerships'],
-      Threats: ['Competitive landscape', 'Market saturation'],
-      NicheScore: 50,
-    };
+    // Return default response based on framework
+    return getDefaultResponse(framework);
+  }
+}
+
+// Get default response for a framework
+function getDefaultResponse(framework) {
+  switch (framework) {
+    case 'pestle':
+      return {
+        Political: ['Stable regulatory environment', 'Government support'],
+        Economic: ['Growing market', 'Favorable economic conditions'],
+        Social: ['Changing consumer preferences', 'Demographic trends'],
+        Technological: ['Digital transformation', 'Emerging technologies'],
+        Legal: ['Compliance requirements', 'Industry regulations'],
+        Environmental: ['Sustainability concerns', 'Green initiatives'],
+        ViabilityScore: 50,
+      };
+
+    case 'porters':
+      return {
+        CompetitiveRivalry: ['Moderate competition', 'Differentiation opportunities'],
+        SupplierPower: ['Multiple suppliers', 'Reasonable pricing'],
+        BuyerPower: ['Price-sensitive customers', 'Switching costs'],
+        ThreatOfSubstitution: ['Alternative solutions', 'Emerging substitutes'],
+        ThreatOfNewEntry: ['Market barriers', 'Capital requirements'],
+        CompetitiveIntensity: 50,
+      };
+
+    case 'noise':
+      return {
+        Needs: ['Customer pain points', 'Market gaps'],
+        Opportunities: ['Market expansion', 'New segments'],
+        Improvements: ['Process optimization', 'Quality enhancement'],
+        Strengths: ['Core competencies', 'Unique capabilities'],
+        Exceptions: ['Standout features', 'Competitive advantages'],
+        PotentialScore: 50,
+      };
+
+    case 'balanced-scorecard':
+      return {
+        Financial: ['Revenue growth', 'Profitability targets'],
+        Customer: ['Customer satisfaction', 'Market share'],
+        InternalProcesses: ['Operational efficiency', 'Quality metrics'],
+        LearningGrowth: ['Employee development', 'Innovation capacity'],
+        StrategicAlignment: 50,
+      };
+
+    case 'vrio':
+      return {
+        Value: ['Customer value creation', 'Problem solving'],
+        Rarity: ['Unique resources', 'Distinctive capabilities'],
+        Imitability: ['Difficult to replicate', 'Proprietary processes'],
+        Organization: ['Organizational readiness', 'Resource alignment'],
+        CompetitiveAdvantage: 50,
+      };
+
+    case 'mckinsey-7s':
+      return {
+        Strategy: ['Business direction', 'Competitive positioning'],
+        Structure: ['Organizational design', 'Reporting relationships'],
+        Systems: ['Business processes', 'Technology infrastructure'],
+        SharedValues: ['Company culture', 'Core values'],
+        Skills: ['Key competencies', 'Talent capabilities'],
+        Style: ['Leadership approach', 'Management style'],
+        Staff: ['Team composition', 'Talent management'],
+        OrganizationalAlignment: 50,
+      };
+
+    default: // SWOT
+      return {
+        Strengths: ['Innovative concept', 'Clear value proposition'],
+        Weaknesses: ['Market validation needed', 'Resource constraints'],
+        Opportunities: ['Growing market demand', 'Strategic partnerships'],
+        Threats: ['Competitive landscape', 'Market saturation'],
+        NicheScore: 50,
+      };
   }
 }
 

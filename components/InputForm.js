@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { getFrameworkOptions } from '../lib/frameworks';
 
 export default function InputForm({ onSubmit, isLoading }) {
   const [idea, setIdea] = useState('');
   const [focusArea, setFocusArea] = useState('Market');
+  const [framework, setFramework] = useState('swot');
   const [error, setError] = useState('');
 
   // Validate input before submission
@@ -28,7 +30,7 @@ export default function InputForm({ onSubmit, isLoading }) {
     }
 
     // Call parent handler with validated data
-    onSubmit({ idea: trimmedIdea, focusArea });
+    onSubmit({ idea: trimmedIdea, focusArea, framework });
   };
 
   return (
@@ -73,6 +75,26 @@ export default function InputForm({ onSubmit, isLoading }) {
             <option value="Market">Market</option>
             <option value="Product">Product</option>
             <option value="Team">Team</option>
+          </select>
+        </div>
+
+        {/* Strategic Framework dropdown */}
+        <div>
+          <label htmlFor="framework" className="block text-sm font-medium text-gray-700 mb-2">
+            Strategic Framework
+          </label>
+          <select
+            id="framework"
+            value={framework}
+            onChange={(e) => setFramework(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            disabled={isLoading}
+          >
+            {getFrameworkOptions().map((fw) => (
+              <option key={fw.id} value={fw.id}>
+                {fw.name} - {fw.description}
+              </option>
+            ))}
           </select>
         </div>
 

@@ -1,30 +1,34 @@
 import { useState } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { getFramework, getCategoryLabel } from '../lib/frameworks';
 
 /**
  * ExportButton Component
- * 
- * Exports SWOT analysis results as a PDF file
- * 
+ *
+ * Exports strategic analysis results as a PDF file for any framework
+ *
  * Props:
- *   - swotData: object - The SWOT analysis data to export
+ *   - analysisData: object - The analysis data to export
+ *   - framework: string - The framework type (swot, pestle, etc.)
  *   - idea: string - The business idea being analyzed
  *   - focusArea: string - The focus area for the analysis
  *   - disabled: boolean - Whether button is disabled
  */
-export default function ExportButton({ swotData, idea, focusArea, disabled = false }) {
+export default function ExportButton({ analysisData, framework = 'swot', idea, focusArea, disabled = false }) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState('');
 
   const exportToPDF = async () => {
-    if (!swotData) {
-      setError('No SWOT data to export');
+    if (!analysisData) {
+      setError('No analysis data to export');
       return;
     }
 
     setIsExporting(true);
     setError('');
+
+    const frameworkConfig = getFramework(framework);
 
     try {
       // Create a temporary container for the PDF content
@@ -36,11 +40,32 @@ export default function ExportButton({ swotData, idea, focusArea, disabled = fal
       container.style.backgroundColor = 'white';
       container.style.fontFamily = 'Arial, sans-serif';
 
+      // Generate categories HTML
+      const categoriesHtml = frameworkConfig.categories
+        .map((category) => {
+          const categoryLabel = getCategoryLabel(frameworkConfig, category);
+          const items = analysisData[category] || [];
+          const icon = frameworkConfig.icons[category] || '';
+          return `
+            <div style="padding: 15px; border: 2px solid #d1d5db; border-radius: 8px; margin-bottom: 10px;">
+              <h3 style="color: #1f2937; margin: 0 0 10px 0; font-size: 16px; font-weight: bold;">${icon} ${escapeHtml(categoryLabel)}</h3>
+              <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px;">
+                ${items.map(item => `<li style="margin-bottom: 5px;">${escapeHtml(item)}</li>`).join('')}
+              </ul>
+            </div>
+          `;
+        })
+        .join('');
+
+      // Get score field name and value
+      const scoreField = frameworkConfig.scoreField;
+      const scoreValue = analysisData[scoreField] || 0;
+
       // Build the HTML content for the PDF
       container.innerHTML = `
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #1f2937; margin: 0 0 10px 0; font-size: 28px;">💡 SWOT Analysis</h1>
-          <p style="color: #6b7280; margin: 0; font-size: 14px;">Idea SWOT Generator</p>
+          <h1 style="color: #1f2937; margin: 0 0 10px 0; font-size: 28px;">${frameworkConfig.icons[frameworkConfig.categories[0]] || ''} ${escapeHtml(frameworkConfig.name)}</h1>
+          <p style="color: #6b7280; margin: 0; font-size: 14px;">SwotGen - Strategic Analysis Platform</p>
         </div>
 
         <div style="margin-bottom: 25px; padding: 15px; background-color: #f3f4f6; border-radius: 8px;">
@@ -50,49 +75,19 @@ export default function ExportButton({ swotData, idea, focusArea, disabled = fal
           <p style="color: #1f2937; margin: 0; font-size: 14px;">${escapeHtml(focusArea)}</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-          <!-- Strengths -->
-          <div style="padding: 15px; border: 2px solid #10b981; border-radius: 8px;">
-            <h2 style="color: #10b981; margin: 0 0 10px 0; font-size: 18px;">✓ Strengths</h2>
-            <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px;">
-              ${(swotData.Strengths || []).map(item => `<li style="margin-bottom: 5px;">${escapeHtml(item)}</li>`).join('')}
-            </ul>
-          </div>
-
-          <!-- Weaknesses -->
-          <div style="padding: 15px; border: 2px solid #ef4444; border-radius: 8px;">
-            <h2 style="color: #ef4444; margin: 0 0 10px 0; font-size: 18px;">✗ Weaknesses</h2>
-            <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px;">
-              ${(swotData.Weaknesses || []).map(item => `<li style="margin-bottom: 5px;">${escapeHtml(item)}</li>`).join('')}
-            </ul>
-          </div>
-
-          <!-- Opportunities -->
-          <div style="padding: 15px; border: 2px solid #3b82f6; border-radius: 8px;">
-            <h2 style="color: #3b82f6; margin: 0 0 10px 0; font-size: 18px;">◆ Opportunities</h2>
-            <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px;">
-              ${(swotData.Opportunities || []).map(item => `<li style="margin-bottom: 5px;">${escapeHtml(item)}</li>`).join('')}
-            </ul>
-          </div>
-
-          <!-- Threats -->
-          <div style="padding: 15px; border: 2px solid #f59e0b; border-radius: 8px;">
-            <h2 style="color: #f59e0b; margin: 0 0 10px 0; font-size: 18px;">⚠ Threats</h2>
-            <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 13px;">
-              ${(swotData.Threats || []).map(item => `<li style="margin-bottom: 5px;">${escapeHtml(item)}</li>`).join('')}
-            </ul>
-          </div>
+        <div style="margin-bottom: 20px;">
+          ${categoriesHtml}
         </div>
 
-        <!-- Niche Score -->
+        <!-- Score -->
         <div style="padding: 15px; background-color: #f0f9ff; border: 2px solid #0ea5e9; border-radius: 8px; text-align: center;">
-          <p style="color: #0369a1; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">MARKET VIABILITY SCORE</p>
-          <p style="color: #0369a1; margin: 0; font-size: 32px; font-weight: bold;">${swotData.NicheScore || 0}/100</p>
+          <p style="color: #0369a1; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">${escapeHtml(frameworkConfig.scoreLabel)}</p>
+          <p style="color: #0369a1; margin: 0; font-size: 32px; font-weight: bold;">${scoreValue}/100</p>
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
           <p style="color: #9ca3af; margin: 0; font-size: 11px;">
-            Generated by Idea SWOT Generator • ${new Date().toLocaleDateString()}
+            Generated by SwotGen • ${new Date().toLocaleDateString()}
           </p>
         </div>
       `;
@@ -125,7 +120,8 @@ export default function ExportButton({ swotData, idea, focusArea, disabled = fal
 
       // Generate filename with timestamp
       const timestamp = new Date().toISOString().slice(0, 10);
-      const filename = `SWOT-Analysis-${timestamp}.pdf`;
+      const frameworkName = framework.replace('-', '_').toUpperCase();
+      const filename = `${frameworkName}-Analysis-${timestamp}.pdf`;
 
       // Download PDF
       pdf.save(filename);
@@ -142,9 +138,9 @@ export default function ExportButton({ swotData, idea, focusArea, disabled = fal
     <div>
       <button
         onClick={exportToPDF}
-        disabled={disabled || isExporting || !swotData}
+        disabled={disabled || isExporting || !analysisData}
         className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
-          disabled || isExporting || !swotData
+          disabled || isExporting || !analysisData
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'
         }`}

@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import InputForm from '../components/InputForm';
-import SWOTDisplay from '../components/SWOTDisplay';
+import FrameworkDisplay from '../components/FrameworkDisplay';
 import PremiumModal from '../components/PremiumModal';
 import ExportButton from '../components/ExportButton';
 
 export default function Home() {
-  const [swotData, setSWOTData] = useState(null);
+  const [analysisData, setAnalysisData] = useState(null);
+  const [selectedFramework, setSelectedFramework] = useState('swot');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isPremium, setIsPremium] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [formData, setFormData] = useState({ idea: '', focusArea: '' });
+  const [formData, setFormData] = useState({ idea: '', focusArea: '', framework: 'swot' });
 
   // Development mode: Set to true to test export without premium
   // IMPORTANT: Set to false before pushing to production!
@@ -39,11 +40,12 @@ export default function Home() {
   const handleAnalyze = async (data) => {
     setIsLoading(true);
     setError('');
-    setSWOTData(null);
+    setAnalysisData(null);
     setFormData(data); // Save form data for export
+    setSelectedFramework(data.framework || 'swot'); // Track selected framework
 
     try {
-      // Call the API route with the idea and focus area
+      // Call the API route with the idea, focus area, and framework
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
@@ -57,8 +59,8 @@ export default function Home() {
         throw new Error(errorData.error || 'Failed to analyze idea');
       }
 
-      const analysisData = await response.json();
-      setSWOTData(analysisData);
+      const result = await response.json();
+      setAnalysisData(result);
     } catch (err) {
       setError(err.message || 'An error occurred. Please try again.');
       console.error('Error:', err);
@@ -93,8 +95,8 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Idea SWOT Generator - Analyze Your Business Idea</title>
-        <meta name="description" content="Generate SWOT analysis for your business ideas using AI" />
+        <title>SwotGen - Multi-Framework Strategic Analysis Platform</title>
+        <meta name="description" content="Analyze your business ideas with 7 strategic frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, and McKinsey 7S" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -105,8 +107,8 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">💡 Idea SWOT Generator</h1>
-                <p className="text-gray-600 mt-1">Analyze your business idea with AI-powered insights</p>
+                <h1 className="text-3xl font-bold text-gray-900">🎯 SwotGen</h1>
+                <p className="text-gray-600 mt-1">Multi-framework strategic analysis platform powered by AI</p>
               </div>
               {/* Premium button */}
               <button
@@ -139,9 +141,13 @@ export default function Home() {
           )}
 
           {/* Results section */}
-          {swotData && (
+          {analysisData && (
             <div className="bg-white rounded-lg shadow-lg p-8">
-              <SWOTDisplay data={swotData} />
+              <FrameworkDisplay
+                framework={selectedFramework}
+                data={analysisData}
+                isPremium={isPremium}
+              />
 
               {/* Export button - only for premium users (or dev mode) */}
               {(isPremium || DEV_MODE_SHOW_EXPORT) && (
@@ -150,7 +156,8 @@ export default function Home() {
                     {DEV_MODE_SHOW_EXPORT && !isPremium ? '🧪 Dev Mode - Export Test' : 'Premium Feature'}
                   </p>
                   <ExportButton
-                    swotData={swotData}
+                    analysisData={analysisData}
+                    framework={selectedFramework}
                     idea={formData.idea}
                     focusArea={formData.focusArea}
                   />
@@ -160,10 +167,10 @@ export default function Home() {
           )}
 
           {/* Empty state */}
-          {!swotData && !isLoading && !error && (
+          {!analysisData && !isLoading && !error && (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">
-                Enter your business idea above to get started with your SWOT analysis
+                Enter your business idea above to get started with strategic analysis
               </p>
             </div>
           )}
@@ -176,15 +183,16 @@ export default function Home() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">About</h3>
                 <p className="text-sm text-gray-600">
-                  Idea SWOT Generator helps entrepreneurs analyze their business ideas with AI-powered insights.
+                  SwotGen helps entrepreneurs analyze their business ideas with 7 strategic frameworks and AI-powered insights.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Features</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Frameworks</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• AI-powered SWOT analysis</li>
-                  <li>• Niche viability scoring</li>
-                  <li>• Instant results</li>
+                  <li>• SWOT Analysis</li>
+                  <li>• PESTLE Analysis</li>
+                  <li>• Porter's Five Forces</li>
+                  <li>• NOISE, VRIO, Balanced Scorecard, McKinsey 7S</li>
                 </ul>
               </div>
               <div>
@@ -192,11 +200,11 @@ export default function Home() {
                 <div className="text-sm text-gray-600 space-y-2">
                   <div>
                     <p className="font-medium text-gray-900">Free Tier</p>
-                    <p className="text-xs text-gray-500">Basic SWOT analysis</p>
+                    <p className="text-xs text-gray-500">Basic analysis with one framework</p>
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">Premium - £9.99</p>
-                    <p className="text-xs text-gray-500">Unlimited analyses + PDF export</p>
+                    <p className="text-xs text-gray-500">Unlimited analyses + PDF export for all 7 frameworks</p>
                   </div>
                 </div>
               </div>
