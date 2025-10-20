@@ -19,8 +19,8 @@ export default function InputForm({ onSubmit, isLoading }) {
       return;
     }
 
-    if (trimmedIdea.length < 10) {
-      setError('Please provide at least 10 characters');
+    if (trimmedIdea.length < 3) {
+      setError('Please provide at least 3 characters');
       return;
     }
 

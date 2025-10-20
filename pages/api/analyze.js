@@ -16,8 +16,8 @@ export default async function handler(req, res) {
   }
 
   const trimmedIdea = idea.trim();
-  if (trimmedIdea.length < 10 || trimmedIdea.length > 500) {
-    return res.status(400).json({ error: 'Idea must be between 10 and 500 characters' });
+  if (trimmedIdea.length < 3 || trimmedIdea.length > 500) {
+    return res.status(400).json({ error: 'Idea must be between 3 and 500 characters' });
   }
 
   // Validate framework
