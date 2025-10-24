@@ -95,7 +95,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>SwotGen - Multi-Framework Strategic Analysis Platform</title>
+        <title>AnalysisGen - Multi-Framework Strategic Analysis Platform</title>
         <meta name="description" content="Analyze your business ideas with 7 strategic frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, and McKinsey 7S" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -107,12 +107,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">🎯 SwotGen</h1>
-                <p className="text-gray-600 mt-1">
-                  <span className="text-sm">🆓 Free: SWOT Analysis + PDF Export</span>
-                  <span className="text-gray-400 mx-2">•</span>
-                  <span className="text-sm">💎 Premium: All 7 Frameworks + CSV/JSON Export (£9.99)</span>
-                </p>
+                <h1 className="text-3xl font-bold text-gray-900">🎯 AnalysisGen</h1>
               </div>
               {/* Premium button */}
               <button
@@ -187,7 +182,7 @@ export default function Home() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">About</h3>
                 <p className="text-sm text-gray-600">
-                  SwotGen helps entrepreneurs analyze their business ideas with 7 strategic frameworks and AI-powered insights.
+                  AnalysisGen helps entrepreneurs analyze their business ideas with 7 strategic frameworks and AI-powered insights.
                 </p>
               </div>
               <div>
