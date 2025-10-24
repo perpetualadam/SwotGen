@@ -108,7 +108,7 @@ export default function Home() {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">🎯 AnalysisGen</h1>
-                <p className="text-gray-600 mt-1 text-sm">AI-powered strategic business analysis across 7 frameworks</p>
+                <p className="text-gray-600 mt-1 text-sm pl-8">AI-powered strategic business analysis across 7 frameworks</p>
               </div>
               {/* Premium button */}
               <button
