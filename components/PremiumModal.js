@@ -113,7 +113,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Upgrade to Premium</h2>
-          <p className="text-gray-600 mt-2">Unlock all 10 frameworks and advanced export options</p>
+          <p className="text-gray-600 mt-2">Unlock all 11 frameworks and advanced export options</p>
         </div>
 
         {/* Tier Comparison */}
@@ -143,7 +143,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-start gap-2">
                 <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-                <span><strong>All 10 frameworks:</strong> SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S, Business Model Canvas, Ansoff Matrix, Value Proposition Canvas</span>
+                <span><strong>All 11 frameworks:</strong> SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S, Business Model Canvas, Ansoff Matrix, Value Proposition Canvas, OKR</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-600 font-bold flex-shrink-0">✓</span>

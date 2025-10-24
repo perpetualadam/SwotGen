@@ -1,6 +1,6 @@
 // API Route: /api/analyze
 // Handles POST requests to generate strategic analysis using Groq, Together.ai, or OpenAI
-// Supports multiple frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S, Business Model Canvas, Ansoff Matrix, Value Proposition Canvas
+// Supports multiple frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S, Business Model Canvas, Ansoff Matrix, Value Proposition Canvas, OKR
 
 export default async function handler(req, res) {
   // Only accept POST requests
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   // Validate framework
-  const validFrameworks = ['swot', 'pestle', 'porters', 'noise', 'balanced-scorecard', 'vrio', 'mckinsey-7s', 'bmc', 'ansoff', 'vpc'];
+  const validFrameworks = ['swot', 'pestle', 'porters', 'noise', 'balanced-scorecard', 'vrio', 'mckinsey-7s', 'bmc', 'ansoff', 'vpc', 'okr'];
   const selectedFramework = validFrameworks.includes(framework) ? framework : 'swot';
 
   // Check for API key (Groq first, then Together.ai, then OpenAI)
@@ -214,6 +214,24 @@ Provide your response in the following JSON format ONLY (no markdown, no extra t
 }
 
 Ensure ValueAlignment is an integer between 0-100.`;
+
+    case 'okr':
+      return `You are a business strategist. Analyze the following business idea using the OKR (Objectives and Key Results) framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "Objectives": ["objective1", "objective2", "objective3"],
+  "KeyResults": ["keyresult1", "keyresult2", "keyresult3"],
+  "Initiatives": ["initiative1", "initiative2", "initiative3"],
+  "Alignment": ["alignment1", "alignment2", "alignment3"],
+  "Metrics": ["metric1", "metric2", "metric3"],
+  "Timeline": ["timeline1", "timeline2", "timeline3"],
+  "ExecutionReadiness": 75
+}
+
+Ensure ExecutionReadiness is an integer between 0-100.`;
 
     default: // SWOT
       return `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
@@ -449,6 +467,17 @@ function parseFrameworkResponse(content, framework) {
           ValueAlignment: Math.min(100, Math.max(0, parseInt(parsed.ValueAlignment) || 50)),
         };
 
+      case 'okr':
+        return {
+          Objectives: Array.isArray(parsed.Objectives) ? parsed.Objectives.slice(0, 5) : [],
+          KeyResults: Array.isArray(parsed.KeyResults) ? parsed.KeyResults.slice(0, 5) : [],
+          Initiatives: Array.isArray(parsed.Initiatives) ? parsed.Initiatives.slice(0, 5) : [],
+          Alignment: Array.isArray(parsed.Alignment) ? parsed.Alignment.slice(0, 5) : [],
+          Metrics: Array.isArray(parsed.Metrics) ? parsed.Metrics.slice(0, 5) : [],
+          Timeline: Array.isArray(parsed.Timeline) ? parsed.Timeline.slice(0, 5) : [],
+          ExecutionReadiness: Math.min(100, Math.max(0, parseInt(parsed.ExecutionReadiness) || 50)),
+        };
+
       default: // SWOT
         return {
           Strengths: Array.isArray(parsed.Strengths) ? parsed.Strengths.slice(0, 5) : [],
@@ -561,6 +590,17 @@ function getDefaultResponse(framework) {
         PainRelievers: ['Problem solutions', 'Friction reduction'],
         GainCreators: ['Value delivery', 'Benefit realization'],
         ValueAlignment: 50,
+      };
+
+    case 'okr':
+      return {
+        Objectives: ['Primary business objective', 'Strategic goal'],
+        KeyResults: ['Measurable outcome 1', 'Measurable outcome 2'],
+        Initiatives: ['Action item 1', 'Action item 2'],
+        Alignment: ['Organizational alignment', 'Team alignment'],
+        Metrics: ['Success metric 1', 'Success metric 2'],
+        Timeline: ['Q1-Q2 milestones', 'Q3-Q4 milestones'],
+        ExecutionReadiness: 50,
       };
 
     default: // SWOT
