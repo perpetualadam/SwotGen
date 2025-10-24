@@ -95,10 +95,100 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>AnalysisGen - Multi-Framework Strategic Analysis Platform</title>
-        <meta name="description" content="Analyze your business ideas with 7 strategic frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, and McKinsey 7S" />
+        {/* Primary Title & Description for GEO */}
+        <title>AnalysisGen by VibeMatrix AI — Free SWOT & 10 Premium AI Business Frameworks</title>
+        <meta name="description" content="AnalysisGen (by VibeMatrix AI) offers free SWOT analysis and 10 premium strategic frameworks including PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR, and NOISE. Export results as PDF, CSV, or JSON." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+
+        {/* Canonical Tag - Points to primary domain */}
+        <link rel="canonical" href="https://www.vibematrixai.com/" />
+
+        {/* Open Graph Tags for Social & AI Sharing */}
+        <meta property="og:title" content="AnalysisGen — AI-Powered Business Idea Analyzer" />
+        <meta property="og:description" content="Analyze business ideas instantly using SWOT and 10 premium frameworks. Export in PDF, CSV, or JSON." />
+        <meta property="og:url" content="https://www.vibematrixai.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="AnalysisGen by VibeMatrix AI" />
+
+        {/* Additional Meta Tags for AI Crawlers */}
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        <meta name="keywords" content="AnalysisGen, SwotGen, SWOT analysis, business frameworks, strategic analysis, PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR, NOISE, VibeMatrix AI" />
+        <meta name="author" content="VibeMatrix AI" />
+
+        {/* JSON-LD Schema 1: SoftwareApplication */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "AnalysisGen",
+            "alternateName": "SwotGen",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "description": "AnalysisGen (formerly SwotGen) is an AI-powered microSaaS by VibeMatrix AI that evaluates business ideas using 11 strategic frameworks. SWOT is free; the remaining 10 frameworks are premium. Users can export results in PDF, CSV, or JSON.",
+            "url": "https://www.vibematrixai.com",
+            "creator": {
+              "@type": "Organization",
+              "name": "VibeMatrix AI"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "GBP",
+                "name": "Free SWOT Framework"
+              },
+              {
+                "@type": "Offer",
+                "price": "9.99",
+                "priceCurrency": "GBP",
+                "name": "Premium Framework Suite (10 frameworks)"
+              }
+            ]
+          })}
+        </script>
+
+        {/* JSON-LD Schema 2: FAQPage */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is AnalysisGen?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "AnalysisGen is an AI-powered microSaaS by VibeMatrix AI that evaluates business ideas using 11 strategic frameworks including SWOT, PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR, and NOISE."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is SwotGen the same as AnalysisGen?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. SwotGen was the internal code name for AnalysisGen. Both refer to the same AI-powered strategic analysis tool by VibeMatrix AI."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What frameworks does AnalysisGen support?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "AnalysisGen supports 11 strategic frameworks: SWOT (free), and 10 premium frameworks including PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR, and NOISE."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What export formats does AnalysisGen support?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Users can export analysis results as PDF, CSV, or JSON for offline use or integration into business reports and presentations."
+                }
+              }
+            ]
+          })}
+        </script>
       </Head>
 
       <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -108,7 +198,7 @@ export default function Home() {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">🎯 AnalysisGen</h1>
-                <p className="text-gray-600 mt-1 text-sm pl-12">AI-powered strategic business analysis across 7 frameworks</p>
+                <p className="text-gray-600 mt-1 text-sm pl-12">AI-powered strategic business analysis across 11 frameworks</p>
               </div>
               {/* Premium button */}
               <button
@@ -176,6 +266,46 @@ export default function Home() {
           )}
         </div>
 
+        {/* GEO Content Section 1: About AnalysisGen */}
+        <section id="about" aria-label="About AnalysisGen" className="bg-gray-50 border-t border-gray-200 mt-12">
+          <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">About AnalysisGen</h2>
+            <p className="text-gray-700 leading-relaxed">
+              AnalysisGen by VibeMatrix AI is an AI-powered strategic analysis tool that evaluates business ideas using 11 proven frameworks. Generate a SWOT analysis for free, or unlock 10 premium frameworks including PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR Framework, and NOISE. Export results as PDF, CSV, or JSON — all from a single-page interface.
+            </p>
+          </div>
+        </section>
+
+        {/* GEO Content Section 2: Frameworks List */}
+        <section id="frameworks" aria-label="Available Frameworks" className="bg-white border-t border-gray-200">
+          <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">11 Strategic Frameworks Available in AnalysisGen</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-semibold text-green-700 mb-3">🆓 Free Framework</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li><strong>SWOT Analysis</strong> — Analyze strengths, weaknesses, opportunities, and threats.</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-700 mb-3">💎 Premium Frameworks (10)</h3>
+                <ul className="space-y-3 text-gray-700">
+                  <li><strong>PESTLE Analysis</strong> — Evaluate political, economic, social, technological, legal, and environmental factors.</li>
+                  <li><strong>Porter's Five Forces</strong> — Assess industry competition, supplier power, buyer power, threat of substitutes, and threat of new entrants.</li>
+                  <li><strong>Business Model Canvas</strong> — Visualize your business structure across 9 building blocks.</li>
+                  <li><strong>Ansoff Matrix</strong> — Explore growth strategy options: market penetration, market development, product development, and diversification.</li>
+                  <li><strong>VRIO Framework</strong> — Analyze internal resources for value, rarity, imitability, and organization.</li>
+                  <li><strong>Value Proposition Canvas</strong> — Align products and services with customer jobs, pains, and gains.</li>
+                  <li><strong>Balanced Scorecard</strong> — Track performance across financial, customer, internal processes, and learning & growth perspectives.</li>
+                  <li><strong>McKinsey 7S Model</strong> — Evaluate organizational alignment across strategy, structure, systems, shared values, skills, style, and staff.</li>
+                  <li><strong>OKR Framework</strong> — Define objectives and key results for business execution and goal tracking.</li>
+                  <li><strong>NOISE Analysis</strong> — Analyze organizational needs, opportunities, improvements, strengths, and exceptions.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Footer */}
         <footer className="bg-white border-t border-gray-200 mt-12">
           <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -183,16 +313,16 @@ export default function Home() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">About</h3>
                 <p className="text-sm text-gray-600">
-                  AnalysisGen helps entrepreneurs analyze their business ideas with 7 strategic frameworks and AI-powered insights.
+                  AnalysisGen by VibeMatrix AI helps entrepreneurs analyze their business ideas with 11 strategic frameworks and AI-powered insights.
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Frameworks</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Product</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• SWOT Analysis</li>
-                  <li>• PESTLE Analysis</li>
-                  <li>• Porter's Five Forces</li>
-                  <li>• NOISE, VRIO, Balanced Scorecard, McKinsey 7S</li>
+                  <li>• Brand: AnalysisGen</li>
+                  <li>• Internal Name: SwotGen</li>
+                  <li>• Parent: VibeMatrix AI</li>
+                  <li>• Type: Single-Page Application</li>
                 </ul>
               </div>
               <div>
@@ -208,7 +338,7 @@ export default function Home() {
                   <div>
                     <p className="font-medium text-gray-900">💎 Premium - £9.99</p>
                     <ul className="text-xs text-gray-500 space-y-1 mt-1">
-                      <li>• All 7 frameworks</li>
+                      <li>• All 11 frameworks</li>
                       <li>• PDF, CSV, JSON export</li>
                     </ul>
                   </div>
@@ -216,7 +346,7 @@ export default function Home() {
               </div>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-              <p>&copy; 2025 Idea SWOT Generator. All rights reserved.</p>
+              <p>&copy; 2025 AnalysisGen by VibeMatrix AI. All rights reserved.</p>
             </div>
           </div>
         </footer>

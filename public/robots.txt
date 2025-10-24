@@ -1,0 +1,40 @@
+# AnalysisGen by VibeMatrix AI - robots.txt
+# Optimized for AI crawlers and search engines
+
+# Allow all AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: *
+Allow: /
+
+# Disallow crawling of internal API routes
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://www.vibematrixai.com/sitemap.xml
+
