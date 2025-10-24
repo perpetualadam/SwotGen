@@ -108,7 +108,11 @@ export default function Home() {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">🎯 SwotGen</h1>
-                <p className="text-gray-600 mt-1">Multi-framework strategic analysis platform powered by AI</p>
+                <p className="text-gray-600 mt-1">
+                  <span className="text-sm">🆓 Free: SWOT Analysis + PDF Export</span>
+                  <span className="text-gray-400 mx-2">•</span>
+                  <span className="text-sm">💎 Premium: All 7 Frameworks + CSV/JSON Export (£9.99)</span>
+                </p>
               </div>
               {/* Premium button */}
               <button
@@ -197,14 +201,20 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
-                <div className="text-sm text-gray-600 space-y-2">
+                <div className="text-sm text-gray-600 space-y-3">
                   <div>
-                    <p className="font-medium text-gray-900">Free Tier</p>
-                    <p className="text-xs text-gray-500">Basic analysis with one framework</p>
+                    <p className="font-medium text-gray-900">🆓 Free Tier</p>
+                    <ul className="text-xs text-gray-500 space-y-1 mt-1">
+                      <li>• SWOT Analysis only</li>
+                      <li>• PDF export</li>
+                    </ul>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Premium - £9.99</p>
-                    <p className="text-xs text-gray-500">Unlimited analyses + PDF export for all 7 frameworks</p>
+                    <p className="font-medium text-gray-900">💎 Premium - £9.99</p>
+                    <ul className="text-xs text-gray-500 space-y-1 mt-1">
+                      <li>• All 7 frameworks</li>
+                      <li>• PDF, CSV, JSON export</li>
+                    </ul>
                   </div>
                 </div>
               </div>

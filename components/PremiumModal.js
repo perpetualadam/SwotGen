@@ -113,26 +113,51 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         {/* Header */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Upgrade to Premium</h2>
-          <p className="text-gray-600 mt-2">Unlock all 7 strategic frameworks</p>
+          <p className="text-gray-600 mt-2">Unlock all 7 frameworks and advanced export options</p>
         </div>
 
-        {/* Features List */}
-        <div className="mb-6 space-y-3">
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Unlimited analyses for all 7 frameworks</span>
+        {/* Tier Comparison */}
+        <div className="mb-6 space-y-4">
+          {/* Free Tier */}
+          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h3 className="font-semibold text-gray-900 mb-3">🆓 Free Tier</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li className="flex items-start gap-2">
+                <span className="text-gray-400 flex-shrink-0">•</span>
+                <span>SWOT Analysis framework only</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-gray-400 flex-shrink-0">•</span>
+                <span>PDF export</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-gray-400 flex-shrink-0">•</span>
+                <span>Unlimited analyses</span>
+              </li>
+            </ul>
           </div>
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S</span>
-          </div>
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Advanced market insights</span>
-          </div>
-          <div className="flex items-start gap-3">
-            <span className="text-green-600 font-bold text-lg flex-shrink-0">✓</span>
-            <span className="text-gray-700">Export in multiple formats: PDF, CSV, JSON</span>
+
+          {/* Premium Tier */}
+          <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-300">
+            <h3 className="font-semibold text-gray-900 mb-3">💎 Premium Tier</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
+                <span><strong>All 7 frameworks:</strong> SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
+                <span><strong>Multiple export formats:</strong> PDF, CSV, JSON</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
+                <span>Unlimited analyses</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-600 font-bold flex-shrink-0">✓</span>
+                <span>Advanced market insights</span>
+              </li>
+            </ul>
           </div>
         </div>
 

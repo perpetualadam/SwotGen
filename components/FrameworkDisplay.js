@@ -112,8 +112,11 @@ export default function FrameworkDisplay({ framework, data, isPremium }) {
       {renderContent()}
       {!isPremium && (
         <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-          <p className="text-sm text-blue-700">
-            Upgrade to Premium to export this analysis as PDF and access unlimited analyses
+          <p className="text-sm text-blue-700 font-medium mb-2">
+            💎 Upgrade to Premium (£9.99)
+          </p>
+          <p className="text-xs text-blue-600">
+            Unlock all 7 frameworks, CSV & JSON export, and unlimited analyses
           </p>
         </div>
       )}
