@@ -1,6 +1,6 @@
 // API Route: /api/analyze
 // Handles POST requests to generate strategic analysis using Groq, Together.ai, or OpenAI
-// Supports multiple frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S
+// Supports multiple frameworks: SWOT, PESTLE, Porter's Five Forces, NOISE, Balanced Scorecard, VRIO, McKinsey 7S, Business Model Canvas, Ansoff Matrix, Value Proposition Canvas
 
 export default async function handler(req, res) {
   // Only accept POST requests
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   // Validate framework
-  const validFrameworks = ['swot', 'pestle', 'porters', 'noise', 'balanced-scorecard', 'vrio', 'mckinsey-7s'];
+  const validFrameworks = ['swot', 'pestle', 'porters', 'noise', 'balanced-scorecard', 'vrio', 'mckinsey-7s', 'bmc', 'ansoff', 'vpc'];
   const selectedFramework = validFrameworks.includes(framework) ? framework : 'swot';
 
   // Check for API key (Groq first, then Together.ai, then OpenAI)
@@ -159,6 +159,61 @@ Provide your response in the following JSON format ONLY (no markdown, no extra t
 }
 
 Ensure OrganizationalAlignment is an integer between 0-100.`;
+
+    case 'bmc':
+      return `You are a business analyst. Analyze the following business idea using the Business Model Canvas framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "CustomerSegments": ["segment1", "segment2", "segment3"],
+  "ValuePropositions": ["value1", "value2", "value3"],
+  "Channels": ["channel1", "channel2", "channel3"],
+  "CustomerRelationships": ["relationship1", "relationship2", "relationship3"],
+  "RevenueStreams": ["stream1", "stream2", "stream3"],
+  "KeyResources": ["resource1", "resource2", "resource3"],
+  "KeyActivities": ["activity1", "activity2", "activity3"],
+  "KeyPartnerships": ["partner1", "partner2", "partner3"],
+  "CostStructure": ["cost1", "cost2", "cost3"],
+  "BusinessViability": 75
+}
+
+Ensure BusinessViability is an integer between 0-100.`;
+
+    case 'ansoff':
+      return `You are a business analyst. Analyze the following business idea using the Ansoff Matrix framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "MarketPenetration": ["strategy1", "strategy2", "strategy3"],
+  "MarketDevelopment": ["strategy1", "strategy2", "strategy3"],
+  "ProductDevelopment": ["strategy1", "strategy2", "strategy3"],
+  "Diversification": ["strategy1", "strategy2", "strategy3"],
+  "GrowthPotential": 75
+}
+
+Ensure GrowthPotential is an integer between 0-100.`;
+
+    case 'vpc':
+      return `You are a business analyst. Analyze the following business idea using the Value Proposition Canvas framework.
+
+${baseContext}
+
+Provide your response in the following JSON format ONLY (no markdown, no extra text):
+{
+  "CustomerJobs": ["job1", "job2", "job3"],
+  "Pains": ["pain1", "pain2", "pain3"],
+  "Gains": ["gain1", "gain2", "gain3"],
+  "ProductsServices": ["product1", "product2", "product3"],
+  "PainRelievers": ["reliever1", "reliever2", "reliever3"],
+  "GainCreators": ["creator1", "creator2", "creator3"],
+  "ValueAlignment": 75
+}
+
+Ensure ValueAlignment is an integer between 0-100.`;
 
     default: // SWOT
       return `You are a business analyst. Analyze the following business idea and provide a SWOT analysis.
@@ -360,6 +415,40 @@ function parseFrameworkResponse(content, framework) {
           OrganizationalAlignment: Math.min(100, Math.max(0, parseInt(parsed.OrganizationalAlignment) || 50)),
         };
 
+      case 'bmc':
+        return {
+          CustomerSegments: Array.isArray(parsed.CustomerSegments) ? parsed.CustomerSegments.slice(0, 5) : [],
+          ValuePropositions: Array.isArray(parsed.ValuePropositions) ? parsed.ValuePropositions.slice(0, 5) : [],
+          Channels: Array.isArray(parsed.Channels) ? parsed.Channels.slice(0, 5) : [],
+          CustomerRelationships: Array.isArray(parsed.CustomerRelationships) ? parsed.CustomerRelationships.slice(0, 5) : [],
+          RevenueStreams: Array.isArray(parsed.RevenueStreams) ? parsed.RevenueStreams.slice(0, 5) : [],
+          KeyResources: Array.isArray(parsed.KeyResources) ? parsed.KeyResources.slice(0, 5) : [],
+          KeyActivities: Array.isArray(parsed.KeyActivities) ? parsed.KeyActivities.slice(0, 5) : [],
+          KeyPartnerships: Array.isArray(parsed.KeyPartnerships) ? parsed.KeyPartnerships.slice(0, 5) : [],
+          CostStructure: Array.isArray(parsed.CostStructure) ? parsed.CostStructure.slice(0, 5) : [],
+          BusinessViability: Math.min(100, Math.max(0, parseInt(parsed.BusinessViability) || 50)),
+        };
+
+      case 'ansoff':
+        return {
+          MarketPenetration: Array.isArray(parsed.MarketPenetration) ? parsed.MarketPenetration.slice(0, 5) : [],
+          MarketDevelopment: Array.isArray(parsed.MarketDevelopment) ? parsed.MarketDevelopment.slice(0, 5) : [],
+          ProductDevelopment: Array.isArray(parsed.ProductDevelopment) ? parsed.ProductDevelopment.slice(0, 5) : [],
+          Diversification: Array.isArray(parsed.Diversification) ? parsed.Diversification.slice(0, 5) : [],
+          GrowthPotential: Math.min(100, Math.max(0, parseInt(parsed.GrowthPotential) || 50)),
+        };
+
+      case 'vpc':
+        return {
+          CustomerJobs: Array.isArray(parsed.CustomerJobs) ? parsed.CustomerJobs.slice(0, 5) : [],
+          Pains: Array.isArray(parsed.Pains) ? parsed.Pains.slice(0, 5) : [],
+          Gains: Array.isArray(parsed.Gains) ? parsed.Gains.slice(0, 5) : [],
+          ProductsServices: Array.isArray(parsed.ProductsServices) ? parsed.ProductsServices.slice(0, 5) : [],
+          PainRelievers: Array.isArray(parsed.PainRelievers) ? parsed.PainRelievers.slice(0, 5) : [],
+          GainCreators: Array.isArray(parsed.GainCreators) ? parsed.GainCreators.slice(0, 5) : [],
+          ValueAlignment: Math.min(100, Math.max(0, parseInt(parsed.ValueAlignment) || 50)),
+        };
+
       default: // SWOT
         return {
           Strengths: Array.isArray(parsed.Strengths) ? parsed.Strengths.slice(0, 5) : [],
@@ -438,6 +527,40 @@ function getDefaultResponse(framework) {
         Style: ['Leadership approach', 'Management style'],
         Staff: ['Team composition', 'Talent management'],
         OrganizationalAlignment: 50,
+      };
+
+    case 'bmc':
+      return {
+        CustomerSegments: ['Primary target market', 'Secondary segments'],
+        ValuePropositions: ['Core value delivery', 'Unique benefits'],
+        Channels: ['Distribution channels', 'Customer touchpoints'],
+        CustomerRelationships: ['Engagement strategy', 'Support model'],
+        RevenueStreams: ['Primary revenue source', 'Secondary streams'],
+        KeyResources: ['Essential assets', 'Critical capabilities'],
+        KeyActivities: ['Core operations', 'Key processes'],
+        KeyPartnerships: ['Strategic partners', 'Supplier relationships'],
+        CostStructure: ['Fixed costs', 'Variable costs'],
+        BusinessViability: 50,
+      };
+
+    case 'ansoff':
+      return {
+        MarketPenetration: ['Increase market share', 'Improve customer retention'],
+        MarketDevelopment: ['Enter new geographic markets', 'Target new customer segments'],
+        ProductDevelopment: ['Develop new features', 'Create product variations'],
+        Diversification: ['Explore new markets', 'Develop new products'],
+        GrowthPotential: 50,
+      };
+
+    case 'vpc':
+      return {
+        CustomerJobs: ['Primary customer need', 'Secondary objectives'],
+        Pains: ['Customer frustrations', 'Market challenges'],
+        Gains: ['Desired outcomes', 'Success metrics'],
+        ProductsServices: ['Core offering', 'Supporting services'],
+        PainRelievers: ['Problem solutions', 'Friction reduction'],
+        GainCreators: ['Value delivery', 'Benefit realization'],
+        ValueAlignment: 50,
       };
 
     default: // SWOT

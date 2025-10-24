@@ -94,6 +94,32 @@ export default function FrameworkDisplay({ framework, data, isPremium }) {
     </div>
   );
 
+  // Render 3x3 grid layout
+  const render3x3Grid = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {frameworkConfig.categories.map((category) => (
+        <div
+          key={category}
+          className={`p-6 rounded-lg border-2 ${frameworkConfig.colors[category].bg} ${frameworkConfig.colors[category].border}`}
+        >
+          <div className={`${frameworkConfig.colors[category].header} rounded px-3 py-2 mb-4 inline-block`}>
+            <h3 className={`text-lg font-bold ${frameworkConfig.colors[category].text}`}>
+              {frameworkConfig.icons[category]} {getCategoryLabel(frameworkConfig, category)}
+            </h3>
+          </div>
+          <ul className="space-y-2">
+            {(data[category] || []).map((item, idx) => (
+              <li key={idx} className={`text-sm ${frameworkConfig.colors[category].text} flex items-start`}>
+                <span className="mr-2">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+
   // Render based on layout type
   const renderContent = () => {
     switch (frameworkConfig.layout) {
@@ -101,6 +127,8 @@ export default function FrameworkDisplay({ framework, data, isPremium }) {
         return render2x2Grid();
       case '2x3':
         return render2x3Grid();
+      case '3x3':
+        return render3x3Grid();
       default:
         return render2x3Grid();
     }
