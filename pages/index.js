@@ -341,23 +341,18 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
-                <div className="text-sm text-gray-600 space-y-3">
-                  <div>
-                    <p className="font-medium text-gray-900">🆓 Free Tier</p>
-                    <ul className="text-xs text-gray-500 space-y-1 mt-1">
-                      <li>• SWOT Analysis only</li>
-                      <li>• PDF export</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">💎 Premium - £9.99</p>
-                    <ul className="text-xs text-gray-500 space-y-1 mt-1">
-                      <li>• All 11 frameworks</li>
-                      <li>• PDF, CSV, JSON export</li>
-                    </ul>
-                  </div>
-                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">🆓 Free Tier</h3>
+                <ul className="text-xs text-gray-500 space-y-1">
+                  <li>• SWOT Analysis only</li>
+                  <li>• PDF export</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-2">💎 Premium - £9.99</h3>
+                <ul className="text-xs text-gray-500 space-y-1">
+                  <li>• All 11 frameworks</li>
+                  <li>• PDF, CSV, JSON export</li>
+                </ul>
               </div>
             </div>
             <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
