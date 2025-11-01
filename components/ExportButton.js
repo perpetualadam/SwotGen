@@ -278,7 +278,7 @@ export default function ExportButton({ analysisData, framework = 'swot', idea, f
           className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
             disabled || !analysisData || !isPremium
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+              : 'bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer'
           }`}
           title={isPremium ? 'Export analysis as CSV' : 'Premium feature - Upgrade to unlock'}
         >

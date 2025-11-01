@@ -1,0 +1,33 @@
+<svg width="120" height="160" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .logo-icon-node { fill: #00ADB5; }
+      .logo-icon-line { stroke: #00ADB5; stroke-width: 1.5; fill: none; opacity: 0.6; }
+      .logo-icon-line-main { stroke: #00ADB5; stroke-width: 2; fill: none; }
+      .logo-wordmark-stacked { font-family: 'Poppins', 'IBM Plex Sans', sans-serif; font-size: 18px; font-weight: 600; fill: #222831; text-anchor: middle; }
+    </style>
+  </defs>
+  
+  <!-- Icon (48x48px) centered at top -->
+  <g id="icon" transform="translate(36, 12)">
+    <!-- Subtle "A" formed by node connections -->
+    <path class="logo-icon-line-main" d="M12 18 L18 12 L24 18"/>
+    <path class="logo-icon-line-main" d="M15 24 L21 24"/>
+    
+    <!-- Network nodes -->
+    <circle class="logo-icon-node" cx="12" cy="18" r="2"/>
+    <circle class="logo-icon-node" cx="24" cy="18" r="2"/>
+    <circle class="logo-icon-node" cx="18" cy="12" r="2"/>
+    <circle class="logo-icon-node" cx="15" cy="24" r="2"/>
+    <circle class="logo-icon-node" cx="21" cy="24" r="2"/>
+    
+    <!-- Connecting lines -->
+    <line class="logo-icon-line" x1="12" y1="18" x2="15" y2="24"/>
+    <line class="logo-icon-line" x1="24" y1="18" x2="21" y2="24"/>
+    <line class="logo-icon-line" x1="18" y1="12" x2="15" y2="24"/>
+  </g>
+  
+  <!-- Wordmark below icon -->
+  <text class="logo-wordmark-stacked" x="60" y="130">AnalysisGen</text>
+</svg>
+

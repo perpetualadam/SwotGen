@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .favicon-node { fill: #00ADB5; }
+      .favicon-line { stroke: #00ADB5; stroke-width: 1.5; fill: none; opacity: 0.6; }
+      .favicon-line-main { stroke: #00ADB5; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+  
+  <!-- Subtle "A" formed by node connections -->
+  <path class="favicon-line-main" d="M12 18 L18 12 L24 18"/>
+  <path class="favicon-line-main" d="M15 24 L21 24"/>
+  
+  <!-- Network nodes -->
+  <circle class="favicon-node" cx="12" cy="18" r="2"/>
+  <circle class="favicon-node" cx="24" cy="18" r="2"/>
+  <circle class="favicon-node" cx="18" cy="12" r="2"/>
+  <circle class="favicon-node" cx="15" cy="24" r="2"/>
+  <circle class="favicon-node" cx="21" cy="24" r="2"/>
+  
+  <!-- Connecting lines -->
+  <line class="favicon-line" x1="12" y1="18" x2="15" y2="24"/>
+  <line class="favicon-line" x1="24" y1="18" x2="21" y2="24"/>
+  <line class="favicon-line" x1="18" y1="12" x2="15" y2="24"/>
+</svg>
+

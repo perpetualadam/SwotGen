@@ -99,7 +99,8 @@ export default function Home() {
         <title>AnalysisGen by VibeMatrix AI — Free SWOT & 10 Premium AI Business Frameworks</title>
         <meta name="description" content="AnalysisGen (by VibeMatrix AI) offers free SWOT analysis and 10 premium strategic frameworks including PESTLE, Porter's Five Forces, Business Model Canvas, Ansoff Matrix, VRIO, Value Proposition Canvas, Balanced Scorecard, McKinsey 7S, OKR, and NOISE. Export results as PDF, CSV, or JSON." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.ico" />
 
         {/* Canonical Tag - Points to primary domain */}
         <link rel="canonical" href="https://www.vibematrixai.com/" />
@@ -191,14 +192,36 @@ export default function Home() {
         </script>
       </Head>
 
-      <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-cyan-50">
         {/* Header */}
         <header className="bg-white shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">🎯 AnalysisGen</h1>
-                <p className="text-gray-600 mt-1 text-sm pl-12">AI-powered strategic business analysis across 11 frameworks</p>
+              <div className="flex items-center gap-4">
+                {/* Logo SVG */}
+                <svg width="200" height="200" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
+                  <defs>
+                    <style>
+                      {`.logo-icon-node { fill: #00ADB5; }
+                        .logo-icon-line { stroke: #00ADB5; stroke-width: 1.5; fill: none; opacity: 0.6; }
+                        .logo-icon-line-main { stroke: #00ADB5; stroke-width: 2; fill: none; }`}
+                    </style>
+                  </defs>
+                  <path className="logo-icon-line-main" d="M12 18 L18 12 L24 18"/>
+                  <path className="logo-icon-line-main" d="M15 24 L21 24"/>
+                  <circle className="logo-icon-node" cx="12" cy="18" r="2"/>
+                  <circle className="logo-icon-node" cx="24" cy="18" r="2"/>
+                  <circle className="logo-icon-node" cx="18" cy="12" r="2"/>
+                  <circle className="logo-icon-node" cx="15" cy="24" r="2"/>
+                  <circle className="logo-icon-node" cx="21" cy="24" r="2"/>
+                  <line className="logo-icon-line" x1="12" y1="18" x2="15" y2="24"/>
+                  <line className="logo-icon-line" x1="24" y1="18" x2="21" y2="24"/>
+                  <line className="logo-icon-line" x1="18" y1="12" x2="15" y2="24"/>
+                </svg>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">AnalysisGen</h1>
+                  <p className="text-gray-600 mt-1 text-sm">AI-powered strategic business analysis and insights</p>
+                </div>
               </div>
               {/* Premium button */}
               <button
@@ -206,7 +229,7 @@ export default function Home() {
                 className={`px-4 py-2 rounded-lg font-semibold transition ${
                   isPremium
                     ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-cyan-600 text-white hover:bg-cyan-700'
                 }`}
               >
                 {isPremium ? '⭐ Premium' : 'Upgrade'}
@@ -258,7 +281,7 @@ export default function Home() {
 
           {/* Empty state */}
           {!analysisData && !isLoading && !error && (
-            <div className="text-center py-12">
+            <div className="text-center py-1">
               <p className="text-gray-500 text-lg">
                 Enter your business idea above to get started with strategic analysis
               </p>
@@ -282,13 +305,13 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">11 Strategic Frameworks Available in AnalysisGen</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-lg font-semibold text-green-700 mb-3">🆓 Free Framework</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">🆓 Free Framework</h3>
                 <ul className="space-y-3 text-gray-700">
                   <li><strong>SWOT Analysis</strong> — Analyze strengths, weaknesses, opportunities, and threats.</li>
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-blue-700 mb-3">💎 Premium Frameworks (10)</h3>
+                <h3 className="text-lg font-semibold text-cyan-700 mb-3">💎 Premium Frameworks (10)</h3>
                 <ul className="space-y-3 text-gray-700">
                   <li><strong>PESTLE Analysis</strong> — Evaluate political, economic, social, technological, legal, and environmental factors.</li>
                   <li><strong>Porter's Five Forces</strong> — Assess industry competition, supplier power, buyer power, threat of substitutes, and threat of new entrants.</li>

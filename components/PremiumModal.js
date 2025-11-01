@@ -162,7 +162,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         {/* Price Box */}
-        <div className="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+        <div className="mb-6 p-4 bg-cyan-50 rounded-lg border-2 border-cyan-200">
           <p className="text-sm text-gray-600 font-medium">One-time payment</p>
           <p className="text-3xl font-bold text-gray-900 mt-1">£9.99</p>
           <p className="text-xs text-gray-500 mt-2">No recurring charges</p>
@@ -183,7 +183,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
             className={`w-full py-3 px-4 rounded-lg font-semibold transition ${
               isLoading
                 ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                : 'bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer'
             }`}
           >
             {isLoading ? (

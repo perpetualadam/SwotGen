@@ -77,7 +77,7 @@ export default function InputForm({ onSubmit, isLoading }) {
             id="focusArea"
             value={focusArea}
             onChange={(e) => setFocusArea(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition"
             disabled={isLoading}
           >
             <option value="Market">Market</option>
@@ -104,7 +104,7 @@ export default function InputForm({ onSubmit, isLoading }) {
               setFramework(selectedId);
               setShowUpgradeHint(false);
             }}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition"
             disabled={isLoading}
           >
             {getFrameworkOptions().map((fw) => {
@@ -131,7 +131,7 @@ export default function InputForm({ onSubmit, isLoading }) {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full px-6 py-3 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>
