@@ -195,11 +195,11 @@ export default function Home() {
       <main className="min-h-screen bg-gradient-to-br from-gray-50 to-cyan-50">
         {/* Header */}
         <header className="bg-white shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                {/* Logo SVG */}
-                <svg width="200" height="200" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0">
+          <div className="max-w-6xl mx-auto px-4 py-2 sm:py-3 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                {/* Logo SVG - Responsive sizing */}
+                <svg width="80" height="80" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="flex-shrink-0 w-16 h-16 sm:w-48 sm:h-48">
                   <defs>
                     <style>
                       {`.logo-icon-node { fill: #00ADB5; }
@@ -218,15 +218,15 @@ export default function Home() {
                   <line className="logo-icon-line" x1="24" y1="18" x2="21" y2="24"/>
                   <line className="logo-icon-line" x1="18" y1="12" x2="15" y2="24"/>
                 </svg>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">AnalysisGen</h1>
-                  <p className="text-gray-600 mt-1 text-sm">AI-powered strategic business analysis and insights</p>
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-3xl font-bold text-gray-900 truncate">AnalysisGen</h1>
+                  <p className="text-gray-600 mt-1 text-xs sm:text-sm break-words">AI-powered strategic business analysis and insights</p>
                 </div>
               </div>
-              {/* Premium button */}
+              {/* Premium button - Responsive sizing */}
               <button
                 onClick={handlePremiumClick}
-                className={`px-4 py-2 rounded-lg font-semibold transition ${
+                className={`px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-semibold transition text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${
                   isPremium
                     ? 'bg-yellow-400 text-gray-900 hover:bg-yellow-500'
                     : 'bg-cyan-600 text-white hover:bg-cyan-700'
@@ -239,23 +239,23 @@ export default function Home() {
         </header>
 
         {/* Main content */}
-        <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 py-6 sm:py-12 sm:px-6 lg:px-8">
           {/* Input section */}
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8 mb-6 sm:mb-8">
             <InputForm onSubmit={handleAnalyze} isLoading={isLoading} />
           </div>
 
           {/* Error display */}
           {error && (
-            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-red-800 mb-2">Error</h3>
-              <p className="text-red-700">{error}</p>
+            <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-red-50 border-2 border-red-200 rounded-lg">
+              <h3 className="text-base sm:text-lg font-semibold text-red-800 mb-2">Error</h3>
+              <p className="text-sm sm:text-base text-red-700">{error}</p>
             </div>
           )}
 
           {/* Results section */}
           {analysisData && (
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8">
               <FrameworkDisplay
                 framework={selectedFramework}
                 data={analysisData}
@@ -281,7 +281,7 @@ export default function Home() {
 
           {/* Empty state */}
           {!analysisData && !isLoading && !error && (
-            <div className="text-center py-1">
+            <div className="text-center py-0">
               <p className="text-gray-500 text-lg">
                 Enter your business idea above to get started with strategic analysis
               </p>
@@ -339,15 +339,7 @@ export default function Home() {
                   AnalysisGen by VibeMatrix AI helps entrepreneurs analyze their business ideas with 11 strategic frameworks and AI-powered insights.
                 </p>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Product</h3>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Brand: AnalysisGen</li>
-                  <li>• Internal Name: SwotGen</li>
-                  <li>• Parent: VibeMatrix AI</li>
-                  <li>• Type: Single-Page Application</li>
-                </ul>
-              </div>
+
               <div>
                 <h3 className="font-semibold text-gray-900 mb-2">Pricing</h3>
                 <div className="text-sm text-gray-600 space-y-3">
