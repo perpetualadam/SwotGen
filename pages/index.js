@@ -340,7 +340,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div>
+              <div className="text-center">
                 <h3 className="font-semibold text-gray-900 mb-2">🆓 Free Tier</h3>
                 <ul className="text-xs text-gray-500 space-y-1">
                   <li>• SWOT Analysis only</li>
